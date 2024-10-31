@@ -1,0 +1,9 @@
+[bench]
+concurrency = 1
+quantity = 1
+timeout = "20s"
+duration = "1m"
+
+[chain]
+chainId = "mechain_5151-1"
+rpcAddr = "http://devint-lcd.mechain.tech:80"

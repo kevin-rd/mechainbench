@@ -2,10 +2,12 @@ package engine
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"log/slog"
-	"mechainbench/app/core"
-	"mechainbench/app/work"
+	"mechainbench/app/config"
+	"mechainbench/app/worker"
 	"sync"
+	"time"
 )
 
 // Engine is used to control the rate for send tx.
@@ -18,36 +20,44 @@ type Engine interface {
 }
 
 type DefaultEngine struct {
-
-	// 并发量
-	concurrency uint
-
-	worker work.Worker
+	config  *config.Config
+	workers []worker.Worker
 }
 
-func NewDefaultEngine(ctx *core.Context) Engine {
-	worker := work.NewDefaultWorker(ctx)
+func NewDefaultEngine(config *config.Config) Engine {
+
+	var workers []worker.Worker
+	for i := range config.Bench.Concurrency {
+		if w, err := worker.NewDefaultWorker(i, config); err != nil {
+			panic(err)
+		} else {
+			workers = append(workers, w)
+		}
+	}
+
 	return &DefaultEngine{
-		concurrency: 10,
-		worker:      worker,
+		config:  config,
+		workers: workers,
 	}
 }
 
 func (e *DefaultEngine) Run(ctx context.Context) {
-	e.schedule(ctx)
+	timeoutCtx, cancelFunc := context.WithTimeout(ctx, time.Duration(e.config.Bench.Duration))
+	defer cancelFunc()
+	e.schedule(timeoutCtx)
 }
 
 func (e *DefaultEngine) Close() {
-
+	log.Info().Msg("engine closed")
 }
 
 func (e *DefaultEngine) schedule(ctx context.Context) {
 	var wg sync.WaitGroup
-	for i := uint(0); i < e.concurrency; i++ {
+	for i := uint(0); i < e.config.Bench.Concurrency; i++ {
 		wg.Add(1)
 		go func(id int) {
 			defer wg.Done()
-			if err := e.worker.Run(ctx); err != nil {
+			if err := e.workers[id].Run(ctx); err != nil {
 				slog.Error("worker %d execute tx failed: %s", id, err)
 			}
 		}(int(i))
