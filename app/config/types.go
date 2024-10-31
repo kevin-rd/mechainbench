@@ -21,6 +21,10 @@ type Config struct {
 		// Timeout of each transaction
 		Timeout duration
 	} `toml:"bench"`
+
+	Option struct {
+		DefaultPrivateKey string
+	}
 }
 
 type duration time.Duration

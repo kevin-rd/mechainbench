@@ -1,12 +1,12 @@
 package core
 
-import "time"
+import (
+	"golang.org/x/net/context"
+	"mechainbench/app/config"
+)
 
 type Context struct {
-	// 每批次发送数量
-	Quantity uint
+	context.Context
 
-	BatchNum uint
-
-	Timeout time.Duration
+	AppConfig *config.Config
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	log.Logger = log.Logger.With().Caller().Logger()
+	log.Logger = log.Logger.With().Caller().Logger().Level(zerolog.InfoLevel)
 	log.Logger = log.Logger.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 }
 

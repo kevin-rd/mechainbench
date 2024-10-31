@@ -1,9 +1,12 @@
 [bench]
-concurrency = 1
-quantity = 1
-timeout = "20s"
-duration = "1m"
+concurrency = 50
+quantity = 5
+timeout = "30s"
+duration = "5m"
 
 [chain]
 chainId = "mechain_5151-1"
-rpcAddr = "http://devint-lcd.mechain.tech:80"
+rpcAddr = "http://154.223.178.3:26657"
+
+[option]
+defaultPrivateKey = "f78a036930ce63791ea6ea20072986d8c3f16a6811f6a2583b0787c45086f769"

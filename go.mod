@@ -9,7 +9,7 @@ require (
 	github.com/zkMeLabs/mechain-go-sdk v0.0.0-20241021071149-d07f885cd76b
 )
 
-require github.com/evmos/evmos/v12 v12.1.6 // indirect
+require github.com/evmos/evmos/v12 v12.1.6
 
 require (
 	cosmossdk.io/api v0.4.0 // indirect
